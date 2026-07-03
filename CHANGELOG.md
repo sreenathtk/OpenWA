@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.6] - 2026-07-03
+
+### Fixed
+
+
+- **The `engine.getChatHistory` plugin capability (added in 0.8.5) now reaches sandboxed plugins.** It was wired only into the host-side context, not the plugin-worker bridge, so a sandboxed plugin's `ctx.engine.getChatHistory` was `undefined` and the call failed silently. It is now bridged through the worker capability + router like the other engine reads. Historical messages from the whatsapp-web.js engine also carry location coordinates and quoted-message references now, matching the live message path (previously a backfilled location rendered empty and replies lost their thread link). (#609)
+
+## [0.8.5] - 2026-07-03
+
+### Added
+
+- **Plugins can read recent chat history** via a new `ctx.engine.getChatHistory(sessionId, chatId, limit?, includeMedia?)` capability, gated by the `engine:read` permission and the plugin's active-session scope like the other engine reads. The limit is clamped host-side (max 100), and both message directions are returned. This is the host-side prerequisite for an adapter to backfill prior conversation context. (#609)
+
+## [0.8.4] - 2026-07-03
+
+### Added
+
+- **`CSP_UPGRADE_INSECURE_REQUESTS` env var** to control the CSP `upgrade-insecure-requests` directive. It defaults to the existing behaviour (on in production, off elsewhere); set it to `false` for an HTTP-only deployment on a trusted private network, where the browser would otherwise upgrade the dashboard to `https` and make it unreachable. Set it to `true` to force it on. (#611)
+
 ## [0.8.3] - 2026-07-03
 
 ### Added
